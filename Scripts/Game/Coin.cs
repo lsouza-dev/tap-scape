@@ -38,6 +38,8 @@ public class Coin : MonoBehaviour
             spriteRenderer.enabled = false;
 
             gameController.coinsCollected += 1;
+            gameController.coinsToPowerUp += 1;
+
             Destroy(gameObject,timeToDestroy);
         }
         else if (other.CompareTag("Ground"))

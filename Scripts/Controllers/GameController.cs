@@ -11,6 +11,8 @@ public class GameController : MonoBehaviour
     [SerializeField] private TMP_Text timeText;
     [SerializeField] public float surviveTime;
 
+    public int coinsToPowerUp;
+
     // Start is called before the first frame update
     void Start()
     {

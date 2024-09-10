@@ -8,15 +8,19 @@ public class Player : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Animator animator;
+    [SerializeField] private AudioSource audioSource;
+
 
     [Header("Player Attributes")]
     [SerializeField] private float playerSpeed;
-
-
-    [SerializeField] private AudioSource audioSource;
     [SerializeField] private float timeToDestroy;
+    [SerializeField] private bool isShield;
+
+
+    [Header("GameObjects")]
     [SerializeField] private GameController gameController;
     [SerializeField] private GameObject gameOver;
+    [SerializeField] private GameObject shield;
     //[SerializeField] private AudioSource cameraSource;
 
     // Start is called before the first frame update
@@ -26,13 +30,12 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
-        
-        //cameraSource = FindObjectOfType<Camera>().GetComponent<AudioSource>();
     }
 
     void Start()
     {
-        gameController = FindFirstObjectByType<GameController>();
+        
+        gameController = FindObjectOfType<GameController>();
     }
 
     // Update is called once per frame
@@ -49,7 +52,6 @@ public class Player : MonoBehaviour
         {
             spriteRenderer.flipX = true;
             animator.Play("playerRunning");
-
         }
         else if(xInput > 0)
         {
@@ -61,8 +63,6 @@ public class Player : MonoBehaviour
             spriteRenderer.flipX = false;
             animator.Play("playerIdle");
         }
-        
-        
         transform.position = new Vector2(transform.position.x + xInput, transform.position.y);
     }
 
@@ -70,12 +70,28 @@ public class Player : MonoBehaviour
     {
         if (other.CompareTag("Saw"))
         {
-            audioSource.Play();
-            Destroy(other.gameObject);
-            spriteRenderer.enabled = false;
-            gameOver.SetActive(true);
-            Destroy(gameObject, timeToDestroy);
-
+            if (isShield)
+            {
+                audioSource.Play();
+                Destroy(other.gameObject);
+                isShield = false;
+                shield.SetActive(false);
+            }
+            else
+            {
+                spriteRenderer.enabled = false;
+                gameOver.SetActive(true);
+                Destroy(gameObject, timeToDestroy);
+            }
+            
         }
+
+        if (other.CompareTag("Shield"))
+        {
+            Destroy(other.gameObject);
+            shield.SetActive(true);
+            isShield = true;
+        }
+
     }
 }
