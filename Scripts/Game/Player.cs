@@ -34,7 +34,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        
+        gameOver.SetActive(false);
         gameController = FindObjectOfType<GameController>();
     }
 
@@ -60,9 +60,14 @@ public class Player : MonoBehaviour
         }
         else
         {
-            spriteRenderer.flipX = false;
             animator.Play("playerIdle");
         }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            rb.AddForce(Vector2.up, ForceMode2D.Impulse);    
+        }
+
         transform.position = new Vector2(transform.position.x + xInput, transform.position.y);
     }
 
@@ -81,6 +86,7 @@ public class Player : MonoBehaviour
             {
                 spriteRenderer.enabled = false;
                 gameOver.SetActive(true);
+                Time.timeScale = 0;
                 Destroy(gameObject, timeToDestroy);
             }
             
