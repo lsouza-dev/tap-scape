@@ -7,7 +7,9 @@ using UnityEngine.SceneManagement;
 public class GameOver : MonoBehaviour
 {
     [SerializeField] private GameController controller;
-    [SerializeField] public TMP_Text score;
+    [SerializeField] private int coins;
+    [SerializeField] public TMP_Text scoreText;
+    [SerializeField] public TMP_Text highscoreText;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -16,7 +18,15 @@ public class GameOver : MonoBehaviour
 
     void Start()
     {
-        score.text = $"Score: {controller.coinsCollected}";
+        coins = controller.coinsCollected;
+
+        if (coins > PlayerPrefs.GetInt("highscore"))
+        {
+            PlayerPrefs.SetInt("highscore", coins);
+        }
+
+        scoreText.text = $"Score: {controller.coinsCollected}";
+        highscoreText.text = $"Highscore: {PlayerPrefs.GetInt("highscore")}";
     }
 
     // Update is called once per frame
@@ -27,7 +37,8 @@ public class GameOver : MonoBehaviour
 
     public void RestartGame()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Time.timeScale = 1.0f;
     }
 
     public void ExitGame()
