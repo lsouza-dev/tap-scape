@@ -84,6 +84,8 @@ public class Player : MonoBehaviour
             }
             else
             {
+                MusicController music = FindObjectOfType<MusicController>();
+                music.PlayGameOverSound();
                 spriteRenderer.enabled = false;
                 gameOver.SetActive(true);
                 Time.timeScale = 0;
