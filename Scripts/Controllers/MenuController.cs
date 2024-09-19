@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
@@ -17,11 +18,21 @@ public class MenuController : MonoBehaviour
 
     void Start()
     {
-        renderer.enabled = false;
-        score.enabled = false;
-        survive.enabled = false;
-        coinImage.SetActive(false);
-        Time.timeScale = 0f;
+        if(PlayerPrefs.GetInt("isStarted") == 1)
+        {
+            Time.timeScale = 1f;
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            renderer.enabled = false;
+            score.enabled = false;
+            survive.enabled = false;
+            coinImage.SetActive(false);
+            gameObject.SetActive(true);
+            Time.timeScale = 0f;
+        }
+        
     }
 
     // Update is called once per frame
@@ -33,6 +44,7 @@ public class MenuController : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
+        PlayerPrefs.SetInt("isStarted", 0);
     }
 
     public void PlayGame()
@@ -43,5 +55,7 @@ public class MenuController : MonoBehaviour
         coinImage.SetActive(true);
         renderer.enabled = true;
         Time.timeScale = 1f;
+
+        PlayerPrefs.SetInt("isStarted", 1);
     }
 }

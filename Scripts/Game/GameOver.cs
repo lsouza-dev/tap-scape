@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameOver : MonoBehaviour
 {
     [SerializeField] private GameController controller;
+    [SerializeField] private GameObject menu;
     [SerializeField] private int coins;
     [SerializeField] public TMP_Text scoreText;
     [SerializeField] public TMP_Text highscoreText;
@@ -44,5 +46,6 @@ public class GameOver : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
+        PlayerPrefs.SetInt("isStarted", 0);
     }
 }
