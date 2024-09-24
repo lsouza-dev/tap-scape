@@ -13,14 +13,18 @@ public class Player : MonoBehaviour
 
     [Header("Player Attributes")]
     [SerializeField] private float playerSpeed;
+    [SerializeField] private float jumpSpeed;
     [SerializeField] private float timeToDestroy;
     [SerializeField] private bool isShield;
+    [SerializeField] private bool isOnGround;
+
 
 
     [Header("GameObjects")]
     [SerializeField] private GameController gameController;
     [SerializeField] private GameObject gameOver;
     [SerializeField] private GameObject shield;
+    [SerializeField] private GameObject groundCollider;
     //[SerializeField] private AudioSource cameraSource;
 
     // Start is called before the first frame update
@@ -30,6 +34,7 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+        groundCollider = GameObject.FindGameObjectWithTag("GroundCollider");
     }
 
     void Start()
@@ -51,29 +56,48 @@ public class Player : MonoBehaviour
         if(xInput < 0)
         {
             spriteRenderer.flipX = true;
-            animator.Play("playerRunning");
+            animator.SetBool("isRunning", true);
+            animator.SetBool("isIdle", false);
         }
         else if(xInput > 0)
         {
             spriteRenderer.flipX = false;
-            animator.Play("playerRunning");
+            animator.SetBool("isRunning", true);
+            animator.SetBool("isIdle", false);
         }
         else
         {
-            animator.Play("playerIdle");
+            animator.SetBool("isRunning", false);
+            animator.SetBool("isIdle", true);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if(transform.position.y <= groundCollider.transform.position.y)
         {
-            rb.AddForce(Vector2.up, ForceMode2D.Impulse);    
+            isOnGround = true;
+            animator.SetBool("isJumping", false);
         }
+        else
+        {
+            isOnGround = false;
+            animator.SetBool("isJumping", true);
+            animator.SetBool("isIdle", false);
+        }
+
+        if (isOnGround && Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            rb.velocity = Vector2.up * playerSpeed;
+            animator.SetBool("isJumping", true);
+            animator.SetBool("isIdle", false);
+            animator.SetBool("isRunning", false);
+        }
+        
 
         transform.position = new Vector2(transform.position.x + xInput, transform.position.y);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Saw"))
+        if (other.CompareTag("Saw") || other.CompareTag("Enemies"))
         {
             if (isShield)
             {
@@ -100,6 +124,5 @@ public class Player : MonoBehaviour
             shield.SetActive(true);
             isShield = true;
         }
-
     }
 }

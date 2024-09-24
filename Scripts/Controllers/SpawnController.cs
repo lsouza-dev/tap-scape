@@ -6,6 +6,11 @@ public class SpawnController : MonoBehaviour
 {
     [SerializeField] private List<GameObject> spawnables = new List<GameObject>();
     [SerializeField] private List<GameObject> powerUps = new List<GameObject>();
+    [SerializeField] private List<Enemies> enemies = new List<Enemies>();
+    [SerializeField] private List<Transform> spawnersPos = new List<Transform>();
+    [SerializeField] private int timeToSpawnEnemy;
+    private static int spawnEnemy;
+    [SerializeField] private float enemyXOffset = 13;
     // Start is called before the first frame update
     public bool isSpawning = true;
 
@@ -44,6 +49,27 @@ public class SpawnController : MonoBehaviour
                 yield return new WaitForSeconds(timeToSpawn);
                 int randomObject = Random.Range(0, spawnables.Count);
                 GameObject spawnedObject = Instantiate(spawnables[randomObject], new Vector2(Random.Range(-xOffset, xOffset), yOffset), Quaternion.identity);
+            }
+
+            spawnEnemy += 1;
+
+            if (spawnEnemy == timeToSpawnEnemy)
+            {
+                print("Spawna Inimigo");
+                int randomEnemy = Random.Range(0, enemies.Count);
+                int randomPos = Random.Range(0, spawnersPos.Count);
+                Enemies spawnedEnemy = Instantiate(enemies[randomEnemy], spawnersPos[randomPos].position, spawnersPos[randomPos].rotation);
+                
+                if(randomPos == 0)
+                {
+                    spawnedEnemy.spawnAtRight = false;
+                    //spawnedEnemy.transform.position = new Vector2(-15f,spawnerTransform.position.y);
+                }
+                else
+                {
+                    spawnedEnemy.spawnAtRight = true;
+                }
+                spawnEnemy = 0;
             }
         }
     }
