@@ -42,7 +42,6 @@ public class Coin : MonoBehaviour
 
             gameController.coinsCollected += 1;
             gameController.coinsToPowerUp += 1;
-
             Destroy(gameObject,timeToDestroy);
         }
         else if (other.CompareTag("Ground"))

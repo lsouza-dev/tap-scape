@@ -8,6 +8,7 @@ public class MenuController : MonoBehaviour
 {
     [SerializeField] private TMP_Text score;
     [SerializeField] private TMP_Text survive;
+    [SerializeField] private TMP_Text level;
     [SerializeField] private GameObject coinImage;
     private SpriteRenderer renderer;
     // Start is called before the first frame update
@@ -25,6 +26,7 @@ public class MenuController : MonoBehaviour
         }
         else
         {
+            level.enabled = false;
             renderer.enabled = false;
             score.enabled = false;
             survive.enabled = false;
@@ -43,13 +45,14 @@ public class MenuController : MonoBehaviour
 
     public void ExitGame()
     {
-        Application.Quit();
-        PlayerPrefs.SetInt("isStarted", 0);
+        GameController controller = FindObjectOfType<GameController>();
+        controller.RestartPlayerPrefs();
     }
 
     public void PlayGame()
     {
         gameObject.SetActive(false);
+        level.enabled = true;  
         score.enabled = true;
         survive.enabled = true;
         coinImage.SetActive(true);

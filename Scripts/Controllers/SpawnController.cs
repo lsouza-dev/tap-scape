@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class SpawnController : MonoBehaviour
@@ -55,11 +56,20 @@ public class SpawnController : MonoBehaviour
 
             if (spawnEnemy == timeToSpawnEnemy)
             {
-                print("Spawna Inimigo");
                 int randomEnemy = Random.Range(0, enemies.Count);
-                int randomPos = Random.Range(0, spawnersPos.Count);
+                int randomPos;
+
+                if(randomEnemy <= 1)
+                {
+                    randomPos = 0;
+                }
+                else
+                {
+                    randomPos = 1;
+                }
+
                 Enemies spawnedEnemy = Instantiate(enemies[randomEnemy], spawnersPos[randomPos].position, spawnersPos[randomPos].rotation);
-                
+
                 if(randomPos == 0)
                 {
                     spawnedEnemy.spawnAtRight = false;

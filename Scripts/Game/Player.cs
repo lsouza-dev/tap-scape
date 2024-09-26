@@ -80,10 +80,9 @@ public class Player : MonoBehaviour
         {
             isOnGround = false;
             animator.SetBool("isJumping", true);
-            animator.SetBool("isIdle", false);
-        }
+            animator.SetBool("isIdle", false);        }
 
-        if (isOnGround && Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow))
+        if (isOnGround && Input.GetKeyDown(KeyCode.Space) || isOnGround && Input.GetKeyDown(KeyCode.UpArrow))
         {
             rb.velocity = Vector2.up * playerSpeed;
             animator.SetBool("isJumping", true);

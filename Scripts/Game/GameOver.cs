@@ -31,21 +31,18 @@ public class GameOver : MonoBehaviour
         highscoreText.text = $"Highscore: {PlayerPrefs.GetInt("highscore")}";
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        GameController controller = FindObjectOfType<GameController>();
+        controller.RestartPlayerPrefs();
         Time.timeScale = 1.0f;
     }
 
     public void ExitGame()
     {
         Application.Quit();
-        PlayerPrefs.SetInt("isStarted", 0);
+        GameController controller = FindObjectOfType<GameController>();
+        controller.RestartPlayerPrefs();
     }
 }
