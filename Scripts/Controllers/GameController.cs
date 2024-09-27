@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,16 +13,23 @@ public class GameController : MonoBehaviour
     [SerializeField] private TMP_Text coinsText;
     [SerializeField] private TMP_Text timeText;
     [SerializeField] private TMP_Text levelText;
-    [SerializeField] private TMP_Text nextLevelText;
+    [SerializeField] public TMP_Text nextLevelText;
     [SerializeField] public float surviveTime;
     [SerializeField] private int gameLevel = 1;
     [SerializeField] private int sceneIndex = 0;
+    [SerializeField] GameObject ruby;
+    Player player;
     private bool nextLevel;
-    public int coinsToPowerUp;
-
+    public float secondsToPowerUp;
+    public bool gameEnd;
     // Start is called before the first frame update
     // Update is called once per frame
 
+
+    private void Awake()
+    {
+        player = FindObjectOfType<Player>(); 
+    }
     private void Start()
     {
         GetPlayerPrefs();
@@ -31,7 +39,7 @@ public class GameController : MonoBehaviour
         {
             gameLevel = 1;
             surviveTime = 0;
-            coinsToNextLevel = 10;
+            coinsToNextLevel += 10;
         }
         nextLevelText.enabled = false;
         StopAllCoroutines();
@@ -49,11 +57,21 @@ public class GameController : MonoBehaviour
             sceneIndex++;
             if (nextLevel)
             {
-                nextLevelText.text = "Next Level!";
-                NextLevel(sceneIndex);
-            }
-            
+                if (gameLevel < 3)
+                {
+                    nextLevelText.text = "Next Level!";
+                    NextLevel();
+                }
+                else
+                {
+                    SpawnController spawn = FindObjectOfType<SpawnController>();
+                    spawn.isSpawning = false;
+                    gameEnd = true;
+                }
+            }          
         }
+
+        secondsToPowerUp += Time.deltaTime;
     }
 
     private void ShowCollectedCoins()
@@ -71,9 +89,9 @@ public class GameController : MonoBehaviour
         levelText.text = $"Level: {gameLevel}";
     }
 
-    private void NextLevel(int sceneIndex)
+    private void NextLevel()
     {
-        if(gameLevel < 3)
+        if(gameLevel < 3 && !gameEnd)
         {
             coinsToNextLevel += 10;
             StartCoroutine(LevelTransition());
@@ -82,11 +100,15 @@ public class GameController : MonoBehaviour
 
     private IEnumerator LevelTransition()
     {
-        yield return new WaitForSeconds(2f);
-        gameLevel++;
-        SetPlayerPrefs();
-        SceneManager.LoadScene(sceneIndex);
-        StartCoroutine(LevelTransition());
+        if(gameLevel < 3)
+        {
+            yield return new WaitForSeconds(2f);
+            gameLevel++;
+            SetPlayerPrefs();
+            SceneManager.LoadScene(sceneIndex);
+            StartCoroutine(LevelTransition());
+        }
+        
     }
 
     public void GetPlayerPrefs()
@@ -95,6 +117,7 @@ public class GameController : MonoBehaviour
         surviveTime =  PlayerPrefs.GetFloat("surviveTime");
         gameLevel = PlayerPrefs.GetInt("gameLevel");
         coinsToNextLevel  = PlayerPrefs.GetInt("coinsToNextLevel");
+        player.haveShield = PlayerPrefs.GetInt("haveShield");
     }
 
 
@@ -105,6 +128,7 @@ public class GameController : MonoBehaviour
         PlayerPrefs.SetFloat("surviveTime", 0);
         PlayerPrefs.SetInt("gameLevel", 0);
         PlayerPrefs.SetInt("coinsToNextLevel", 0);
+        PlayerPrefs.SetInt("haveShield", 0);
     }
 
     public void SetPlayerPrefs()

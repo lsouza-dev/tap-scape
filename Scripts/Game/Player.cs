@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float playerSpeed;
     [SerializeField] private float jumpSpeed;
     [SerializeField] private float timeToDestroy;
+    public int haveShield;
     [SerializeField] private bool isShield;
     [SerializeField] private bool isOnGround;
 
@@ -39,8 +40,22 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        haveShield = PlayerPrefs.GetInt("haveShield");
+
+        if(haveShield == 1)
+        {
+            isShield = true;
+            shield.SetActive(true);
+        }
+        else
+        {
+            isShield = false;
+            shield.SetActive(false);
+        }
+
         gameOver.SetActive(false);
         gameController = FindObjectOfType<GameController>();
+        
     }
 
     // Update is called once per frame
@@ -82,7 +97,7 @@ public class Player : MonoBehaviour
             animator.SetBool("isJumping", true);
             animator.SetBool("isIdle", false);        }
 
-        if (isOnGround && Input.GetKeyDown(KeyCode.Space) || isOnGround && Input.GetKeyDown(KeyCode.UpArrow))
+        if (isOnGround && Input.GetKeyDown(KeyCode.Space) || isOnGround && Input.GetKeyDown(KeyCode.UpArrow) || isOnGround && Input.GetKeyDown(KeyCode.W))
         {
             rb.velocity = Vector2.up * playerSpeed;
             animator.SetBool("isJumping", true);
@@ -100,6 +115,7 @@ public class Player : MonoBehaviour
         {
             if (isShield)
             {
+                PlayerPrefs.SetInt("haveShield", 0);
                 audioSource.Play();
                 Destroy(other.gameObject);
                 isShield = false;
@@ -119,9 +135,15 @@ public class Player : MonoBehaviour
 
         if (other.CompareTag("Shield"))
         {
+            PlayerPrefs.SetInt("haveShield", 1);
             Destroy(other.gameObject);
             shield.SetActive(true);
             isShield = true;
+        }
+
+        if (other.CompareTag("Ruby"))
+        {
+            gameController.nextLevelText.text = "Parabens!!\nVoce completou o jogo!";
         }
     }
 }

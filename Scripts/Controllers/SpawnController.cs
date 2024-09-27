@@ -29,26 +29,20 @@ public class SpawnController : MonoBehaviour
         StartCoroutine(spawnItems());
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private IEnumerator spawnItems()
     {
         while (isSpawning)
         {
-            if(gameController.coinsToPowerUp == 10)
+            if(gameController.secondsToPowerUp >= 20)
             {
                 int randomPowerUp = Random.Range(0, powerUps.Count);
                 GameObject powerUp = Instantiate(powerUps[randomPowerUp], new Vector2(Random.Range(-xOffset, xOffset), yOffset), Quaternion.identity);
-                gameController.coinsToPowerUp = 0;
+                gameController.secondsToPowerUp = 0;
             }
             else
             {
                 yield return new WaitForSeconds(timeToSpawn);
-                int randomObject = Random.Range(0, spawnables.Count);
+                int randomObject = Random.Range(0, spawnables.Count -1);
                 GameObject spawnedObject = Instantiate(spawnables[randomObject], new Vector2(Random.Range(-xOffset, xOffset), yOffset), Quaternion.identity);
             }
 
@@ -82,5 +76,13 @@ public class SpawnController : MonoBehaviour
                 spawnEnemy = 0;
             }
         }
+
+        if (!isSpawning && gameController.gameEnd)
+        {
+            yield return new WaitForSeconds(1f);
+            Instantiate(spawnables[spawnables.Count-1], new Vector2(0, 7.3f), Quaternion.identity);
+            StopCoroutine("spawnItens");
+        }
+        
     }
 }
