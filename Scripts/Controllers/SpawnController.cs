@@ -9,8 +9,8 @@ public class SpawnController : MonoBehaviour
     [SerializeField] private List<GameObject> powerUps = new List<GameObject>();
     [SerializeField] private List<Enemies> enemies = new List<Enemies>();
     [SerializeField] private List<Transform> spawnersPos = new List<Transform>();
-    [SerializeField] private int timeToSpawnEnemy;
-    private static int spawnEnemy;
+    [SerializeField] private int timeToSpawnEnemy = 3;
+    [SerializeField] private static int spawnEnemy;
     [SerializeField] private float enemyXOffset = 13;
     // Start is called before the first frame update
     public bool isSpawning = true;
@@ -27,6 +27,7 @@ public class SpawnController : MonoBehaviour
     void Start()
     {
         StartCoroutine(spawnItems());
+
     }
 
     private IEnumerator spawnItems()
@@ -43,12 +44,13 @@ public class SpawnController : MonoBehaviour
             {
                 yield return new WaitForSeconds(timeToSpawn);
                 int randomObject = Random.Range(0, spawnables.Count -1);
+                if (gameController.gameLevel == 1) randomObject = 0;
                 GameObject spawnedObject = Instantiate(spawnables[randomObject], new Vector2(Random.Range(-xOffset, xOffset), yOffset), Quaternion.identity);
             }
 
-            spawnEnemy += 1;
+            if(gameController.gameLevel > 2) spawnEnemy += 1;
 
-            if (spawnEnemy == timeToSpawnEnemy)
+            if (spawnEnemy == timeToSpawnEnemy && gameController.gameLevel > 2)
             {
                 int randomEnemy = Random.Range(0, enemies.Count);
                 int randomPos;

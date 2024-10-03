@@ -1073,7 +1073,7 @@ MonoBehaviour:
   gameLevel: 1
   sceneIndex: 0
   ruby: {fileID: 5625589607084146096, guid: e1b1402e9cb17d149ac761922d78384b, type: 3}
-  coinsToPowerUp: 0
+  secondsToPowerUp: 0
   gameEnd: 0
 --- !u!1 &620602438
 GameObject:

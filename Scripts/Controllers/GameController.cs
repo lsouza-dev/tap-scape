@@ -15,7 +15,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private TMP_Text levelText;
     [SerializeField] public TMP_Text nextLevelText;
     [SerializeField] public float surviveTime;
-    [SerializeField] private int gameLevel = 1;
+    [SerializeField] public int gameLevel = 1;
     [SerializeField] private int sceneIndex = 0;
     [SerializeField] GameObject ruby;
     Player player;
@@ -50,6 +50,7 @@ public class GameController : MonoBehaviour
         ShowCollectedCoins();
         ShowSurviveTime();
         ShowGameLevel();
+        print(gameLevel);
         if(coinsCollected == coinsToNextLevel)
         {
             nextLevel = true;
@@ -118,6 +119,7 @@ public class GameController : MonoBehaviour
         gameLevel = PlayerPrefs.GetInt("gameLevel");
         coinsToNextLevel  = PlayerPrefs.GetInt("coinsToNextLevel");
         player.haveShield = PlayerPrefs.GetInt("haveShield");
+        sceneIndex = PlayerPrefs.GetInt("sceneIndex");
     }
 
 
@@ -129,6 +131,7 @@ public class GameController : MonoBehaviour
         PlayerPrefs.SetInt("gameLevel", 0);
         PlayerPrefs.SetInt("coinsToNextLevel", 0);
         PlayerPrefs.SetInt("haveShield", 0);
+        PlayerPrefs.SetInt("sceneIndex", 0);
     }
 
     public void SetPlayerPrefs()
@@ -138,6 +141,7 @@ public class GameController : MonoBehaviour
         PlayerPrefs.SetInt("coinsCollected", coinsCollected);
         PlayerPrefs.SetFloat("surviveTime", surviveTime);
         PlayerPrefs.SetInt("gameLevel", gameLevel);
+        PlayerPrefs.SetInt("sceneIndex", sceneIndex);
     }
 
 }
